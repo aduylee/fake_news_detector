@@ -1,3 +1,5 @@
+# BƯỚC 1: Dán nội dung này vào file README.md trong thư mục dự án của bạn
+
 # 🔍 Fake News Detector
 
 Dự án phát hiện tin giả (Fake News) sử dụng các kỹ thuật Học máy (Machine Learning) và Xử lý ngôn ngữ tự nhiên (NLP) để phân loại tin tức dựa trên dữ liệu văn bản.
@@ -37,17 +39,22 @@ Dự án được chia thành 4 giai đoạn chính, được thể hiện qua c
    git clone [https://github.com/aduylee/fake_news_detector.git](https://github.com/aduylee/fake_news_detector.git)
    cd fake_news_detector
 
-   Cài đặt thư viện phụ thuộc:
-   pip install -r requirements.txt
-   Chạy ứng dụng:
-   python app_flask.py
-
-📁 Cấu trúc thư mục
-   FAKE_NEWS/
-├── data/               # Chứa các file CSV (True.csv, Fake.csv)
-├── models/             # Lưu file model (.pkl)
-├── notebooks/          # Quy trình 4 bước huấn luyện mô hình
-├── src/                # Mã nguồn logic xử lý
-├── app_flask.py        # File chạy server web
-└── requirements.txt    # Danh sách thư viện cần cài
-Dự án được xây dựng bởi aduylee.
+## 📁 Cấu trúc thư mục
+```text
+FAKE_NEWS/
+├── data/
+│   ├── cleaned_data.csv
+│   ├── Fake.csv
+│   └── True.csv
+├── models/
+│   └── fake_news_model.pkl
+├── notebooks/
+│   ├── 01_data_preprocessing.ipynb
+│   ├── 02_model_training.ipynb
+│   ├── 03_model_evaluation.ipynb
+│   └── 04_inference_test.ipynb
+├── src/
+├── templates/
+├── app_flask.py
+├── requirements.txt
+└── README.md
