@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Sử Kiểm Tra Tin Giả</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .main-card { border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .header-bg { background: linear-gradient(135deg, #6c757d, #343a40); color: white; border-radius: 15px 15px 0 0; }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card main-card mb-4">
+                <div class="card-header header-bg py-3 d-flex justify-content-between align-items-center">
+                    <h3 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left me-2"></i>Lịch Sử Kiểm Tra Bài Báo</h3>
+                    <a href="{{ url_for('home') }}" class="btn btn-light btn-sm fw-bold"><i class="fa-solid fa-house me-1"></i>Về Trang Chủ</a>
+                </div>
+                <div class="card-body p-4">
+                    {% if history_rows %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>Tiêu đề / Nội dung</th>
+                                    <th>Nguồn Domain</th>
+                                    <th>Kết quả</th>
+                                    <th>Tin cậy</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in history_rows %}
+                                <tr>
+                                    <td><small class="text-muted">{{ row[4] }}</small></td>
+                                    <td><strong>{{ row[0] }}</strong></td>
+                                    <td><code>{{ row[1] }}</code></td>
+                                    <td>
+                                        <span class="badge {% if 'Giả' in row[2] %}bg-danger{% else %}bg-success{% endif %}">
+                                            {{ row[2] }}
+                                        </span>
+                                    </td>
+                                    <td><strong>{{ row[3] }}%</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa-solid fa-folder-open fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Chưa có lịch sử kiểm tra nào được ghi nhận.</p>
+                        <a href="{{ url_for('home') }}" class="btn btn-primary mt-2">Bắt đầu kiểm tra ngay</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

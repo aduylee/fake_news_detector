@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Phát Hiện Tin Giả (Song Ngữ)</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .main-card { border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .header-bg { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; border-radius: 15px 15px 0 0; }
+        .result-box { border-radius: 10px; padding: 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card main-card mb-4">
+                <div class="card-header header-bg py-3 d-flex justify-content-between align-items-center">
+                    <h3 class="fw-bold mb-0"><i class="fa-solid fa-shield-halved me-2"></i>Hệ Thống Phát Hiện Tin Giả</h3>
+                    <a href="{{ url_for('history') }}" class="btn btn-light btn-sm fw-bold"><i class="fa-solid fa-clock-rotate-left me-1"></i>Xem Lịch Sử</a>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <!-- Form nhập liệu -->
+                    <form method="POST" action="/">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Chọn phương thức nhập:</label>
+                            <select class="form-select" name="input_type" id="inputType" onchange="toggleInput()">
+                                <option value="url">Nhập Liên Kết (URL bài báo)</option>
+                                <option value="text">Dán Trực Tiếp Nội Dung Văn Bản</option>
+                            </select>
+                        </div>
+
+                        <!-- Ô nhập URL đã được kéo giãn full chiều rộng w-100 -->
+                        <div class="mb-3" id="urlGroup">
+                            <label class="form-label fw-bold d-block">Đường dẫn bài báo (URL):</label>
+                            <input type="url" class="form-control w-100" name="url_input" placeholder="Dán đường dẫn bài báo vào đây (https://...)">
+                        </div>
+
+                        <div class="mb-3 d-none" id="textGroup">
+                            <label class="form-label fw-bold">Nội dung bài viết:</label>
+                            <textarea class="form-control" name="text_input" rows="6" placeholder="Dán nội dung bài báo cần kiểm tra vào đây..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                            <i class="fa-solid fa-magnifying-glass-chart me-2"></i>Tiến Hành Phân Tích
+                        </button>
+                    </form>
+
+                    <!-- Thông báo lỗi -->
+                    {% if result %}
+                    <div class="alert alert-warning mt-4 text-center" role="alert">
+                        {{ result }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Kết quả phân tích -->
+                    {% if result_data %}
+                    <div class="result-box {% if result_data.is_fake %}bg-danger-subtle border border-danger text-danger{% else %}bg-success-subtle border border-success text-success{% endif %}">
+                        <h4 class="fw-bold mb-2">
+                            {% if result_data.is_fake %}
+                                <i class="fa-solid fa-triangle-exclamation me-2"></i>Cảnh báo: TƯƠNG QUAN TIN GIẢ (FAKE NEWS)
+                            {% else %}
+                                <i class="fa-solid fa-circle-check me-2"></i>Đánh giá: TIN THẬT (TRUE NEWS)
+                            {% endif %}
+                        </h4>
+                        <p class="mb-0">Độ tin cậy của mô hình: <strong>{{ result_data.prob }}%</strong></p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Thông tin Meta cào từ URL -->
+                    {% if meta %}
+                    <div class="card mt-4 bg-light border-0">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-circle-info me-2"></i>Thông tin bài báo</h5>
+                            <p class="mb-1"><strong>Tiêu đề:</strong> {{ meta.title }}</p>
+                            <p class="mb-1"><strong>Tác giả:</strong> {{ meta.authors }}</p>
+                            <p class="mb-1"><strong>Ngày đăng:</strong> {{ meta.publish_date }}</p>
+                            <p class="mb-1"><strong>Nguồn Domain:</strong> <code>{{ meta.domain }}</code></p>
+                            <p class="mb-0"><strong>Độ uy tín nguồn:</strong> <span class="badge bg-secondary">{{ meta.domain_status }}</span></p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Từ khóa đặc trưng -->
+                    {% if keywords %}
+                    <div class="mt-4">
+                        <h6 class="fw-bold text-secondary"><i class="fa-solid fa-tags me-2"></i>Từ khóa đặc trưng:</h6>
+                        <div>
+                            {% for kw in keywords %}
+                            <span class="badge bg-info text-dark me-1 p-2">{{ kw }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleInput() {
+        let type = document.getElementById('inputType').value;
+        let urlGroup = document.getElementById('urlGroup');
+        let textGroup = document.getElementById('textGroup');
+        
+        if (type === 'url') {
+            urlGroup.classList.remove('d-none');
+            textGroup.classList.add('d-none');
+        } else {
+            urlGroup.classList.add('d-none');
+            textGroup.classList.remove('d-none');
+        }
+    }
+</script>
+
+</body>
+</html>
