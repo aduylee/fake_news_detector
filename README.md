@@ -36,3 +36,18 @@ Dự án được chia thành 4 giai đoạn chính, được thể hiện qua c
    ```bash
    git clone [https://github.com/aduylee/fake_news_detector.git](https://github.com/aduylee/fake_news_detector.git)
    cd fake_news_detector
+
+   Cài đặt thư viện phụ thuộc:
+   pip install -r requirements.txt
+   Chạy ứng dụng:
+   python app_flask.py
+
+📁 Cấu trúc thư mục
+   FAKE_NEWS/
+├── data/               # Chứa các file CSV (True.csv, Fake.csv)
+├── models/             # Lưu file model (.pkl)
+├── notebooks/          # Quy trình 4 bước huấn luyện mô hình
+├── src/                # Mã nguồn logic xử lý
+├── app_flask.py        # File chạy server web
+└── requirements.txt    # Danh sách thư viện cần cài
+Dự án được xây dựng bởi aduylee.
